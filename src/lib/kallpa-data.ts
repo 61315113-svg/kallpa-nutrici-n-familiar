@@ -274,4 +274,4 @@ export const mercados = [
 
 // Placeholder: reemplazar por el enlace final del grupo (https://chat.whatsapp.com/...)
 export const WHATSAPP_MENSAJE = "Hola Kallpa Nutrición, quiero unirme a la comunidad para recibir tips y recetas";
-export const WHATSAPP_GROUP_URL = `https://wa.me/51999999999?text=${encodeURIComponent(WHATSAPP_MENSAJE)}`;
+export const WHATSAPP_GROUP_URL = `https://chat.whatsapp.com/DhEObwHb39MDUrKdrRTpBB?s=sh&p=a&iam=2}`;
