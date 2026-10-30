@@ -134,26 +134,44 @@ export const mercados = [
     nombre: "Mercado de San Pedro",
     zona: "Centro Histórico, a 5 cuadras de la Plaza de Armas",
     dias: "Todos los días · 6:00 a.m. – 6:00 p.m.",
-    tips: ["Llega temprano (antes de las 8 a.m.) para frutas más frescas.", "En el fondo encuentras granos andinos a granel, más baratos.", "Pide la 'yapa': ¡es costumbre cusqueña!"],
+    tips: [
+      "Llega temprano, antes de las 8:00 a.m., y encontrarás las frutas más frescas.",
+      "Al fondo del mercado hay granos andinos a granel, mucho más económicos.",
+      "No olvides pedir tu «yapa»: ¡es una linda costumbre cusqueña!",
+    ],
   },
   {
     nombre: "Mercado de Wanchaq",
     zona: "Av. Garcilaso, Wanchaq",
     dias: "Todos los días · 6:00 a.m. – 7:00 p.m.",
-    tips: ["Ideal para comprar sangrecita y menudencias frescas.", "Los puestos de verduras del Valle llegan martes y viernes.", "Compara precios entre 2 o 3 caseras antes de comprar."],
+    tips: [
+      "Es el lugar ideal para conseguir sangrecita y menudencias frescas.",
+      "Las verduras del Valle Sagrado llegan los martes y viernes.",
+      "Compara precios con dos o tres caseras antes de decidir tu compra.",
+    ],
   },
   {
     nombre: "Mercado Vinocanchón",
     zona: "San Jerónimo",
     dias: "Mejores días: miércoles y sábado",
-    tips: ["Es mayorista: compra en grupo con tus vecinas y ahorra.", "Excelente para papa nativa, habas y tarwi.", "Lleva tu propia bolsa de tela y sencillo."],
+    tips: [
+      "Es un mercado mayorista: organízate con tus vecinas, compren juntas y ahorren.",
+      "Excelente para papa nativa, habas y tarwi.",
+      "Lleva tu propia bolsa de tela y monedas sencillas.",
+    ],
   },
   {
     nombre: "Feria de Huancaro",
     zona: "Huancaro, Santiago",
     dias: "Solo domingos · 5:00 a.m. – 2:00 p.m.",
-    tips: ["Productores directos de las comunidades: precios justos.", "Encuentras quesos frescos, cuy y granos recién cosechados.", "Ve antes de las 9 a.m. para la mejor variedad."],
+    tips: [
+      "Compras directo a los productores de las comunidades, a precios justos.",
+      "Encontrarás quesos frescos, cuy y granos recién cosechados.",
+      "Llega antes de las 9:00 a.m. para disfrutar de la mayor variedad.",
+    ],
   },
 ];
 
-export const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/";
+// Placeholder: reemplazar por el enlace final del grupo (https://chat.whatsapp.com/...)
+export const WHATSAPP_MENSAJE = "Hola Kallpa Nutrición, quiero unirme a la comunidad para recibir tips y recetas";
+export const WHATSAPP_GROUP_URL = `https://wa.me/51999999999?text=${encodeURIComponent(WHATSAPP_MENSAJE)}`;
