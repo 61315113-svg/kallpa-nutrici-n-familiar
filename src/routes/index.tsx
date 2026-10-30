@@ -55,7 +55,7 @@ const QR_N = 25;
 const qrCells: [number, number][] = (() => {
   const cells: [number, number][] = [];
   const finder = (x: number, y: number) =>
-    [[0, 0], [QR_N - 7, 0], [0, QR_N - 7]].some(([fx, fy]) => x >= fx - 1 && x < fx + 8 && y >= fy - 1 && y < fy + 8);
+    ([[0, 0], [QR_N - 7, 0], [0, QR_N - 7]] as [number, number][]).some(([fx, fy]) => x >= fx - 1 && x < fx + 8 && y >= fy - 1 && y < fy + 8);
   let seed = 7;
   for (let y = 0; y < QR_N; y++)
     for (let x = 0; x < QR_N; x++) {
