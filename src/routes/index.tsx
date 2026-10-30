@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
       { title: "Kallpa Nutrición · Recetas nutritivas y económicas de Cusco" },
       { name: "description", content: "Recetas fáciles, nutritivas y económicas con productos de los mercados de Cusco." },
       { property: "og:title", content: "Kallpa Nutrición · Sabor local al alcance de tu bolsillo" },
-      { property: "og:description", content: "Recetas cusqueñas desde S/ 2.50, guía de mercados y comunidad WhatsApp para familias." },
+      { property: "og:description", content: "Recetas nutritivas y accesibles para familias." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -23,8 +23,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const soles = (n: number) => `S/ ${n.toFixed(2)}`;
-
+const soles = (n: number) => "";
 function Logo() {
   return (
     <a href="#inicio" className="flex items-center gap-2">
