@@ -210,7 +210,7 @@ export function filtrarRecetas(lista: Receta[], filtroId: string, busqueda: stri
   const f = filtros.find((x) => x.id === filtroId) ?? filtros[0];
   const q = busqueda.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  return lista.filter((r) => f.test(r) && (!q || norm(r.nombre).includes(q) || norm(r.ingredientes.join(" ")).includes(q)));
+  return lista.filter((r) => (!f || f.test(r)) && (!q || norm(r.nombre).includes(q) || norm(r.ingredientes.join(" ")).includes(q)));
 }
 
 export const mercados = [
@@ -274,4 +274,4 @@ export const mercados = [
 
 // Placeholder: reemplazar por el enlace final del grupo (https://chat.whatsapp.com/...)
 export const WHATSAPP_MENSAJE = "Hola Kallpa Nutrición, quiero unirme a la comunidad para recibir tips y recetas";
-export const WHATSAPP_GROUP_URL = `https://chat.whatsapp.com/DhEObwHb39MDUrKdrRTpBB?s=sh&p=a&iam=2}`;
+export const WHATSAPP_GROUP_URL = `https://chat.whatsapp.com/DhEObwHb39MDUrKdrRTpBB?s=sh&p=a&iam=2`;
