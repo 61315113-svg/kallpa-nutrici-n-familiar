@@ -20,7 +20,7 @@ export interface Receta {
   minutos: number;
   dificultad: "Fácil" | "Media";
   imagen: string;
-  imagenFuente?: string;
+  imagenFuente?: string | undefined;
   badges: string[];
   dietas: Dieta[];
   ingredientes: string[];
