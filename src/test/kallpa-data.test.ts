@@ -1,0 +1,32 @@
+import { describe, expect, it } from "vitest";
+import { recetas, mercados, filtrarRecetas } from "@/lib/kallpa-data";
+import { kallpaImages } from "@/lib/kallpa-images";
+
+describe("Kallpa recipe rules", () => {
+  it("assigns genuinely distinct photos to all 30 recipes, four markets and cover", () => {
+    expect(recetas).toHaveLength(30);
+    expect(mercados).toHaveLength(4);
+    expect(kallpaImages).toHaveLength(35);
+    expect(new Set(kallpaImages.map((p) => p.photoId)).size).toBe(35);
+    expect(new Set(recetas.map((r) => r.imagen)).size).toBe(30);
+    expect(recetas.every((r) => r.imagenFuente?.startsWith("https://images.unsplash.com/photo-"))).toBe(true);
+    expect(kallpaImages.every((p) => new URL(p.sourceUrl).searchParams.get("sig") === String(p.index))).toBe(true);
+  });
+  it("finds ingredient names immediately including tarwi, sangrecita and quinua", () => {
+    for (const ingredient of ["tarwi", "sangrecita", "quinua"]) {
+      const found = filtrarRecetas(recetas, "todas", ingredient);
+      expect(found.length).toBeGreaterThan(0);
+      expect(found.every((r) => `${r.nombre} ${r.ingredientes.join(" ")}`.toLowerCase().includes(ingredient))).toBe(true);
+    }
+  });
+  it("matches cañihua without accents", () => {
+    expect(filtrarRecetas(recetas, "todas", "canihua").map((r) => r.id)).toEqual(filtrarRecetas(recetas, "todas", "cañihua").map((r) => r.id));
+    expect(filtrarRecetas(recetas, "todas", "canihua")).toHaveLength(2);
+  });
+  it("limits quick recipes to strictly less than 20 minutes", () => {
+    const found = filtrarRecetas(recetas, "rapidas", "");
+    expect(found.length).toBeGreaterThan(0);
+    expect(found.every((r) => r.minutos < 20)).toBe(true);
+    expect(found.some((r) => r.minutos === 20)).toBe(false);
+  });
+});

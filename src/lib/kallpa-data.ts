@@ -8,6 +8,7 @@ import guiso from "@/assets/guiso.jpg";
 import chicha from "@/assets/chicha.jpg";
 import quinua from "@/assets/quinua.jpg";
 import sopa from "@/assets/sopa.jpg";
+import { recipeImages, marketImages } from "@/lib/kallpa-images";
 
 export type Categoria = "Desayuno" | "Almuerzo" | "Cena" | "Bebida" | "Postre" | "Dieta Especial";
 type Dieta = "diabeticos" | "vegetariano" | "hierro" | "sin-gluten" | "proteina";
@@ -19,6 +20,7 @@ export interface Receta {
   minutos: number;
   dificultad: "Fácil" | "Media";
   imagen: string;
+  imagenFuente?: string;
   badges: string[];
   dietas: Dieta[];
   ingredientes: string[];
@@ -44,7 +46,7 @@ function r(
   return { id: slug(nombre), nombre, categoria, minutos, dificultad, imagen, badges: ["Económico y Accesible", ...badges], dietas, ingredientes, pasos, tips };
 }
 
-export const recetas: Receta[] = [
+const recetasBase: Receta[] = [
   // Desayunos
   r("Desayuno", "Ponche de habas con avena", 25, ponche, ["Rico en Fibra"], ["vegetariano"],
     ["1 taza de harina de habas tostadas", "½ taza de avena", "1 manzana picada", "1 rama de canela y 3 clavos", "1 litro de agua"],
@@ -178,6 +180,11 @@ export const recetas: Receta[] = [
     ["La cañihua tiene más proteína que la mayoría de cereales.", "Perfecto antes de entrenar o ir a trabajar."]),
 ];
 
+export const recetas: Receta[] = recetasBase.map((receta, index) => {
+  const photo = recipeImages[index];
+  return { ...receta, imagen: photo ? `${photo.url}?sig=${photo.index}` : receta.imagen, imagenFuente: photo?.sourceUrl };
+});
+
 export interface Filtro {
   id: string;
   label: string;
@@ -213,7 +220,7 @@ export function filtrarRecetas(lista: Receta[], filtroId: string, busqueda: stri
   return lista.filter((r) => (!f || f.test(r)) && (!q || norm(r.nombre).includes(q) || norm(r.ingredientes.join(" ")).includes(q)));
 }
 
-export const mercados = [
+const mercadosBase = [
   {
     id: "san-pedro",
     corto: "San Pedro",
@@ -272,6 +279,11 @@ export const mercados = [
   },
 ];
 
-// Placeholder: reemplazar por el enlace final del grupo (https://chat.whatsapp.com/...)
+export const mercados = mercadosBase.map((mercado, index) => {
+  const photo = marketImages[index];
+  return { ...mercado, imagen: photo ? `${photo.url}?sig=${photo.index}` : undefined, imagenFuente: photo?.sourceUrl };
+});
+
+// Enlace del grupo compartido para todos los accesos a la comunidad.
 export const WHATSAPP_MENSAJE = "Hola Kallpa Nutrición, quiero unirme a la comunidad para recibir tips y recetas";
 export const WHATSAPP_GROUP_URL = `https://chat.whatsapp.com/DhEObwHb39MDUrKdrRTpBB?s=sh&p=a&iam=2`;

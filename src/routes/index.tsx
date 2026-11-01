@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Search, Clock, Home, ShoppingBasket, Copy, Check, Leaf, MapPin, CalendarDays, MessageCircle, QrCode, Sparkles, Heart, Facebook, Instagram, Youtube, X,
+  Search, Clock, Home, ShoppingBasket, Copy, Leaf, MapPin, CalendarDays, MessageCircle, Sparkles, Heart, Facebook, Instagram, Youtube, X,
 } from "lucide-react";
-import hero from "@/assets/hero.jpg";
+import { heroImage } from "@/lib/kallpa-images";
+import { RecipePhoto } from "@/components/recipe-photo";
 import { recetas, filtros, filtrarRecetas, mercados, WHATSAPP_GROUP_URL, type Receta } from "@/lib/kallpa-data";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -118,7 +119,7 @@ function Index() {
 
       {/* Hero */}
       <section id="inicio" className="relative overflow-hidden">
-        <img src={hero} alt="Productos andinos del mercado cusqueño" width={1600} height={1008} className="absolute inset-0 h-full w-full object-cover" />
+        <RecipePhoto src={heroImage ? `${heroImage.url}?sig=${heroImage.index}` : undefined} alt="Verduras frescas para la cocina familiar" width={1600} height={1008} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-hero-overlay" />
         <div className="relative mx-auto max-w-6xl px-4 py-16 md:py-24">
           <div className="max-w-xl text-earth-foreground">
@@ -179,7 +180,7 @@ function Index() {
           {lista.map((r) => (
             <article key={r.id} className="group flex flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-warm">
               <div className="relative aspect-[4/3] overflow-hidden">
-                <img src={r.imagen} alt={r.nombre} loading="lazy" width={944} height={704} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <RecipePhoto src={r.imagen} alt={`Imagen ilustrativa: ${r.nombre}`} loading="lazy" width={944} height={704} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-bold">{r.categoria}</span>
               </div>
               <div className="flex flex-1 flex-col p-5">
@@ -226,7 +227,7 @@ function Index() {
           <div className="space-y-3">
             {destacadas.map((r) => (
               <Button key={r.id} onClick={() => setAbierta(r)} variant="ghost" className="flex h-auto w-full items-center gap-4 whitespace-normal rounded-lg bg-card p-3 text-left shadow-sm transition hover:shadow-warm">
-                <img src={r.imagen} alt="" loading="lazy" width={944} height={704} className="h-16 w-20 rounded-xl object-cover" />
+                <RecipePhoto src={r.imagen} alt="" loading="lazy" width={944} height={704} className="h-16 w-20 shrink-0 rounded-lg object-cover" />
                 <span className="flex-1 font-bold">{r.nombre}</span>
 
               </Button>
@@ -248,7 +249,7 @@ function Index() {
           {mercados.map((m) => (
             <TabsContent key={m.id} value={m.id} className="mt-6">
               <div className="grid gap-6 md:grid-cols-2">
-                <div className="market-image-slot" data-market={m.id} />
+                <RecipePhoto src={m.imagen} alt={`Puestos de productos frescos, imagen ilustrativa para ${m.nombre}`} loading="lazy" width={800} height={600} className="aspect-[4/3] w-full rounded-lg object-cover" />
                 <div>
                   <h3 className="text-2xl font-bold">{m.nombre}</h3>
                   <p className="mt-3 flex items-start gap-2 text-muted-foreground"><MapPin className="mt-1 h-4 w-4 shrink-0 text-primary" />{m.zona}</p>
@@ -333,7 +334,7 @@ function Index() {
           </Button>
         ))}
       </nav>
-      <RecetaModal receta={abierta} onClose={() => setAbierta(null)} />
+      <RecetaModal key={abierta?.id ?? "closed"} receta={abierta} onClose={() => setAbierta(null)} />
     </div>
   );
 }
@@ -356,7 +357,7 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[85dvh] overflow-y-auto p-0 sm:max-w-2xl">
-        <img src={receta.imagen} alt={receta.nombre} width={944} height={704} className="h-40 sm:h-56 w-full object-cover" />
+        <RecipePhoto src={receta.imagen} alt={`Imagen ilustrativa: ${receta.nombre}`} width={944} height={704} className="h-40 sm:h-56 w-full object-cover" />
         <div className="p-6">
           <DialogHeader>
             <DialogTitle className="font-display text-2xl">{receta.nombre}</DialogTitle>
