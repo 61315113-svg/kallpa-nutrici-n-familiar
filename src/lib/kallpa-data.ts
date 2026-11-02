@@ -8,7 +8,7 @@ import guiso from "@/assets/guiso.jpg";
 import chicha from "@/assets/chicha.jpg";
 import quinua from "@/assets/quinua.jpg";
 import sopa from "@/assets/sopa.jpg";
-import { recipeImages, marketImages } from "@/lib/kallpa-images";
+import { recipeImageById, marketImageById } from "@/lib/kallpa-images";
 
 export type Categoria = "Desayuno" | "Almuerzo" | "Cena" | "Bebida" | "Postre" | "Dieta Especial";
 type Dieta = "diabeticos" | "vegetariano" | "hierro" | "sin-gluten" | "proteina";
@@ -180,8 +180,8 @@ const recetasBase: Receta[] = [
     ["La cañihua tiene más proteína que la mayoría de cereales.", "Perfecto antes de entrenar o ir a trabajar."]),
 ];
 
-export const recetas: Receta[] = recetasBase.map((receta, index) => {
-  const photo = recipeImages[index];
+export const recetas: Receta[] = recetasBase.map((receta) => {
+  const photo = recipeImageById.get(receta.id);
   return { ...receta, imagen: photo ? `${photo.url}?sig=${photo.index}` : receta.imagen, imagenFuente: photo?.sourceUrl };
 });
 
@@ -279,8 +279,8 @@ const mercadosBase = [
   },
 ];
 
-export const mercados = mercadosBase.map((mercado, index) => {
-  const photo = marketImages[index];
+export const mercados = mercadosBase.map((mercado) => {
+  const photo = marketImageById.get(mercado.id);
   return { ...mercado, imagen: photo ? `${photo.url}?sig=${photo.index}` : undefined, imagenFuente: photo?.sourceUrl };
 });
 

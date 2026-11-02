@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { recetas, mercados, filtrarRecetas } from "@/lib/kallpa-data";
-import { kallpaImages } from "@/lib/kallpa-images";
+import { kallpaImages, recipeImageById, marketImageById } from "@/lib/kallpa-images";
 
 describe("Kallpa recipe rules", () => {
   it("assigns genuinely distinct photos to all 30 recipes, four markets and cover", () => {
@@ -11,6 +11,26 @@ describe("Kallpa recipe rules", () => {
     expect(new Set(recetas.map((r) => r.imagen)).size).toBe(30);
     expect(recetas.every((r) => r.imagenFuente?.startsWith("https://images.unsplash.com/photo-"))).toBe(true);
     expect(kallpaImages.every((p) => new URL(p.sourceUrl).searchParams.get("sig") === String(p.index))).toBe(true);
+  });
+  it("uses 34 distinct source URLs across recipes and markets, without query-string duplicates", () => {
+    const photos = [...recetas, ...mercados];
+    expect(new Set(photos.map((photo) => photo.imagenFuente?.split("?")[0])).size).toBe(34);
+    expect(new Set(photos.map((photo) => photo.imagen)).size).toBe(34);
+  });
+  it("keeps every dish assigned to its own photo even when recipes are reordered", () => {
+    const reversed = [...recetas].reverse();
+    for (const receta of reversed) {
+      const image = recipeImageById.get(receta.id);
+      expect(image?.sourceUrl).toBe(receta.imagenFuente);
+    }
+    expect(recipeImageById.size).toBe(30);
+  });
+  it("records San Pedro provenance without claiming other markets are verified", () => {
+    expect(marketImageById.get("san-pedro")?.photoId).toBe("1465512861810-7dd31b34ed98");
+    expect(marketImageById.get("san-pedro")?.verification).toBe("location-verified");
+    for (const id of ["wanchaq", "vinocanchon", "huancaro"]) {
+      expect(marketImageById.get(id)?.verification).toBe("illustrative");
+    }
   });
   it("finds ingredient names immediately including tarwi, sangrecita and quinua", () => {
     for (const ingredient of ["tarwi", "sangrecita", "quinua"]) {
