@@ -4,6 +4,7 @@
 - [x] Add market tabs, hours, visit days and seasonal produce.
 - [x] Assign unique, verified Unsplash photos to all recipes and markets, with per-image identifiers and resilient loading.
 - [x] Verify tests and desktop/mobile interactions.
-- [ ] Verify exact dish photography for all 30 recipes and replace mismatches with distinct Unsplash photos.
-- [ ] Verify authentic Cusco market photography and replace generic market images.
-- [ ] Test image assignments and check the displayed photographs.
+- [ ] Complete exact photography for all 30 dishes. Blocked: no exact Unsplash matches verified for regional preparations; two better illustrative replacements installed, but actual dish photos are still needed.
+- [ ] Complete authentic photography for all four markets. San Pedro replaced and verified; blocked: no verified Unsplash photos found for Wanchaq, Vinocanchón or Huancaro.
+- [x] Key assignments by stable dish/market IDs, retain 34 distinct source URLs, and record observed subjects and provenance without claiming exact matches.
+- [x] Run seven data tests and verify new photos, matching modal image and all market tabs in the browser; no runtime or build errors.
