@@ -9,6 +9,6 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep recipe and market source photo metadata in the browser-safe image catalog, and serve downloaded photos through asset pointers; this prevents duplicate IDs and external hotlink dependencies.
+- Keep recipe and market source photo metadata, observed subjects and verification status in the browser-safe image catalog; assign photos by stable dish/market ID rather than array position and serve downloads through asset pointers to prevent accidental reassignment, false provenance and external hotlink dependencies.
 - Use the shared accent-insensitive recipe filter for all ingredient searches; this keeps list results consistent.
 - Keep clipboard actions client-side and WhatsApp sharing in ordinary outbound links; neither requires server credentials.
