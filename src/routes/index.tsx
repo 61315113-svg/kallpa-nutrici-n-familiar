@@ -52,46 +52,6 @@ function WaButton({ children, className = "" }: { children: React.ReactNode; cla
   );
 }
 
-const QR_N = 25;
-const qrCells: [number, number][] = (() => {
-  const cells: [number, number][] = [];
-  const finder = (x: number, y: number) =>
-    ([[0, 0], [QR_N - 7, 0], [0, QR_N - 7]] as [number, number][]).some(([fx, fy]) => x >= fx - 1 && x < fx + 8 && y >= fy - 1 && y < fy + 8);
-  let seed = 7;
-  for (let y = 0; y < QR_N; y++)
-    for (let x = 0; x < QR_N; x++) {
-      seed = (seed * 9301 + 49297) % 233280;
-      const center = Math.abs(x - 12) < 4 && Math.abs(y - 12) < 4;
-      if (!finder(x, y) && !center && seed / 233280 > 0.5) cells.push([x, y]);
-    }
-  return cells;
-})();
-
-function QrPlaceholder({ size = "h-36 w-36" }: { size?: string }) {
-  const Finder = ({ x, y }: { x: number; y: number }) => (
-    <g>
-      <rect x={x} y={y} width={7} height={7} rx={1.6} className="fill-earth" />
-      <rect x={x + 1} y={y + 1} width={5} height={5} rx={1} className="fill-card" />
-      <rect x={x + 2} y={y + 2} width={3} height={3} rx={0.8} className="fill-primary" />
-    </g>
-  );
-  return (
-    <div className={`${size} relative rounded-2xl bg-card p-2 shadow-sm ring-1 ring-border`} role="img" aria-label="Código QR de la comunidad Kallpa (próximamente)">
-      <svg viewBox={`0 0 ${QR_N} ${QR_N}`} className="h-full w-full">
-        {qrCells.map(([x, y]) => (
-          <rect key={`${x}-${y}`} x={x + 0.08} y={y + 0.08} width={0.84} height={0.84} rx={0.3} className="fill-earth" />
-        ))}
-        <Finder x={0} y={0} />
-        <Finder x={QR_N - 7} y={0} />
-        <Finder x={0} y={QR_N - 7} />
-      </svg>
-      <span className="absolute left-1/2 top-1/2 grid h-[26%] w-[26%] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-whatsapp text-whatsapp-foreground ring-4 ring-card">
-        <Leaf className="h-1/2 w-1/2" />
-      </span>
-    </div>
-  );
-}
-
 function Index() {
   const [busqueda, setBusqueda] = useState("");
   const [filtro, setFiltro] = useState("todas");
