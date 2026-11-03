@@ -8,3 +8,4 @@
 - [ ] Complete authentic photography for all four markets. San Pedro replaced and verified; blocked: no verified Unsplash photos found for Wanchaq, Vinocanchón or Huancaro.
 - [x] Key assignments by stable dish/market IDs, retain 34 distinct source URLs, and record observed subjects and provenance without claiming exact matches.
 - [x] Run seven data tests and verify new photos, matching modal image and all market tabs in the browser; no runtime or build errors.
+- [x] Replace the decorative QR with a real scannable code of the WhatsApp group link, generated from the same constant the buttons use; verified by decoding the on-screen codes.
