@@ -240,8 +240,8 @@ function Index() {
             <WaButton className="mt-6 text-lg">Unirme al Grupo VIP de Kallpa</WaButton>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <QrPlaceholder size="h-44 w-44" />
-            <span className="text-sm opacity-80">QR oficial próximamente</span>
+            <WhatsAppQr className="h-52 w-52" />
+            <span className="text-sm opacity-80">Escanea con la cámara de tu teléfono y únete</span>
           </div>
         </div>
       </section>
@@ -266,7 +266,7 @@ function Index() {
           </div>
           <div className="flex flex-col items-start gap-2">
             <h4 className="font-bold">Acceso rápido</h4>
-            <QrPlaceholder size="h-28 w-28" />
+            <WhatsAppQr className="h-32 w-32" label="Código QR de acceso rápido al grupo de WhatsApp de Kallpa" />
           </div>
         </div>
         <p className="border-t px-4 py-5 text-center text-xs text-muted-foreground">
@@ -277,7 +277,7 @@ function Index() {
       {/* Banner flotante */}
       {bannerVisible && (
         <div className="fixed bottom-4 right-4 z-30 hidden max-w-xs items-center gap-3 rounded-2xl border bg-card p-3 shadow-warm md:flex">
-          <QrPlaceholder size="h-16 w-16" />
+          <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-whatsapp/10 text-whatsapp"><MessageCircle className="h-8 w-8" /></span>
           <div className="flex-1">
             <p className="text-sm font-bold">¿Menús semanales gratis?</p>
             <a href={WHATSAPP_GROUP_URL} target="_blank" rel="noreferrer" className="mt-1 inline-block rounded-full bg-whatsapp px-3 py-1 text-xs font-bold text-whatsapp-foreground">
