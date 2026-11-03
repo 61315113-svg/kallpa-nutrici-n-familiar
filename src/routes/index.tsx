@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { heroImage } from "@/lib/kallpa-images";
 import { RecipePhoto } from "@/components/recipe-photo";
+import { WhatsAppQr } from "@/components/whatsapp-qr";
 import { recetas, filtros, filtrarRecetas, mercados, WHATSAPP_GROUP_URL, type Receta } from "@/lib/kallpa-data";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
