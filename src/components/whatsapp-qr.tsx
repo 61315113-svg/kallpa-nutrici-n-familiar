@@ -21,11 +21,12 @@ export const WhatsAppQr = memo(function WhatsAppQr({
   const side = size + QR_QUIET * 2;
   const c = side / 2;
 
+  // Solid, full-module squares: the most reliable thing a phone camera can read.
   const dots: React.ReactNode[] = [];
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       if (!dark[y * size + x] || isUnderBadge(x + QR_QUIET, y + QR_QUIET, side)) continue;
-      dots.push(<rect key={`${x}-${y}`} x={x + QR_QUIET + 0.06} y={y + QR_QUIET + 0.06} width={0.88} height={0.88} rx={0.3} className="fill-earth" />);
+      dots.push(<rect key={`${x}-${y}`} x={x + QR_QUIET} y={y + QR_QUIET} width={1} height={1} className="fill-earth" />);
     }
   }
 
@@ -37,7 +38,7 @@ export const WhatsAppQr = memo(function WhatsAppQr({
       aria-label={label}
       className={`group relative block shrink-0 rounded-2xl bg-card shadow-sm ring-1 ring-border transition hover:ring-primary ${className}`}
     >
-      <svg viewBox={`0 0 ${side} ${side}`} className="h-full w-full" role="img" aria-label={label} focusable="false">
+      <svg viewBox={`0 0 ${side} ${side}`} className="h-full w-full" shapeRendering="crispEdges" role="img" aria-label={label} focusable="false">
         <rect width={side} height={side} rx={4} className="fill-card" />
         {dots}
         <circle cx={c} cy={c} r={QR_BADGE_RADIUS} className="fill-card" />

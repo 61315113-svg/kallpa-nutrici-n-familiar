@@ -240,7 +240,7 @@ function Index() {
             <WaButton className="mt-6 text-lg">Unirme al Grupo VIP de Kallpa</WaButton>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <WhatsAppQr className="h-52 w-52" />
+            <WhatsAppQr className="h-64 w-64" />
             <span className="text-sm opacity-80">Escanea con la cámara de tu teléfono y únete</span>
           </div>
         </div>
@@ -266,7 +266,7 @@ function Index() {
           </div>
           <div className="flex flex-col items-start gap-2">
             <h4 className="font-bold">Acceso rápido</h4>
-            <WhatsAppQr className="h-32 w-32" label="Código QR de acceso rápido al grupo de WhatsApp de Kallpa" />
+            <WhatsAppQr className="h-40 w-40" label="Código QR de acceso rápido al grupo de WhatsApp de Kallpa" />
           </div>
         </div>
         <p className="border-t px-4 py-5 text-center text-xs text-muted-foreground">
