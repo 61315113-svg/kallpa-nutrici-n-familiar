@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import jsQR from "jsqr";
 import { WHATSAPP_GROUP_URL } from "@/lib/kallpa-data";
-import { QR_QUIET, communityQrMatrix, isUnderLogo, qrMatrixFor } from "@/lib/whatsapp-qr";
+import { QR_QUIET, communityQrMatrix, isUnderBadge, qrMatrixFor } from "@/lib/whatsapp-qr";
 
 const SCALE = 8;
 
-/** Paints the QR exactly as the card shows it: white margin, dark dots, blank badge in the middle. */
+/** Paints the QR exactly as the card shows it: white margin, dark dots, blank badge disc in the middle. */
 function renderQr() {
   const { size, dark } = communityQrMatrix();
   const side = size + QR_QUIET * 2;
@@ -15,7 +15,7 @@ function renderQr() {
 
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      if (!dark[y * size + x] || isUnderLogo(x, y, size)) continue;
+      if (!dark[y * size + x] || isUnderBadge(x + QR_QUIET, y + QR_QUIET, side)) continue;
       for (let py = 0; py < SCALE; py++) {
         for (let px = 0; px < SCALE; px++) {
           const i = ((y + QR_QUIET) * SCALE + py) * (width * 4) + ((x + QR_QUIET) * SCALE + px) * 4;
@@ -36,12 +36,16 @@ describe("Kallpa WhatsApp QR", () => {
     expect(decoded?.data).toBe(WHATSAPP_GROUP_URL);
   });
 
-  it("keeps the code readable with the WhatsApp badge covering the middle", () => {
-    let hidden = 0;
-    const { size } = communityQrMatrix();
-    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (isUnderLogo(x, y, size)) hidden++;
-    expect(hidden).toBeGreaterThan(0);
-    expect(hidden / (size * size)).toBeLessThan(0.05);
+  it("leaves the badge disc blank instead of hiding dots under it", () => {
+    let cleared = 0;
+    const { size, dark } = communityQrMatrix();
+    const side = size + QR_QUIET * 2;
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (isUnderBadge(x + QR_QUIET, y + QR_QUIET, side)) cleared++;
+    expect(cleared).toBeGreaterThan(0);
+    expect(cleared / (size * size)).toBeLessThan(0.06);
+    // the disc must not eat a finder pattern: those live in the corners
+    expect(isUnderBadge(QR_QUIET + 3, QR_QUIET + 3, side)).toBe(false);
+    void dark;
   });
 
   it("follows the group link instead of repeating a fixed pattern", () => {

@@ -4,8 +4,8 @@ import { WHATSAPP_GROUP_URL } from "@/lib/kallpa-data";
 /** Clear margin around the code, in modules, as the QR standard asks for. */
 export const QR_QUIET = 4;
 
-/** Radius (in modules) of the area the WhatsApp badge covers in the middle. */
-export const QR_LOGO_HALF = 4;
+/** Radius, in modules, of the white disc the WhatsApp badge sits on. Modules under it are left blank. */
+export const QR_BADGE_RADIUS = 5;
 
 export interface QrMatrix {
   size: number;
@@ -13,10 +13,10 @@ export interface QrMatrix {
   dark: boolean[];
 }
 
-/** True when a module is hidden behind the WhatsApp badge drawn on top of the code. */
-export function isUnderLogo(x: number, y: number, size: number) {
-  const center = (size - 1) / 2;
-  return Math.abs(x - center) <= QR_LOGO_HALF + 0.5 && Math.abs(y - center) <= QR_LOGO_HALF + 0.5;
+/** True when a module falls under the badge, so it must stay white in the printed code. */
+export function isUnderBadge(x: number, y: number, size: number) {
+  const c = (size - 1) / 2;
+  return Math.hypot(x - c, y - c) <= QR_BADGE_RADIUS + 0.5;
 }
 
 /**
