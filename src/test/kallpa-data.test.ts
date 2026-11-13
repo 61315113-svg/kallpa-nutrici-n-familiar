@@ -57,3 +57,10 @@ describe("Kallpa recipe rules", () => {
     expect(found.some((r) => r.minutos === 20)).toBe(false);
   });
 });
+import { gruposDe, filtrarRecetas as fr, recetas as rs } from "@/lib/kallpa-data";
+describe("grupos y pasos", () => {
+  it("cada receta beneficia al menos a un grupo", () => { for (const r of rs) expect(gruposDe(r).length).toBeGreaterThan(0); });
+  it("recetas altas en hierro sirven a madres gestantes", () => { expect(gruposDe({ categoria: "Almuerzo", dietas: ["hierro"] })).toContain("gestantes"); });
+  it("filtro de gestantes solo muestra recetas para gestantes", () => { const l = fr(rs, "gestantes", ""); expect(l.length).toBeGreaterThan(0); for (const r of l) expect(gruposDe(r)).toContain("gestantes"); });
+  it("máximo 5 pasos por receta", () => { for (const r of rs) expect(r.pasos.length).toBeLessThanOrEqual(5); });
+});
