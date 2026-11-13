@@ -372,6 +372,9 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
                 </ul>
               </div>
             </TabsContent>
+            <TabsContent value="video" className="pt-3">
+              <VideoTutorial receta={receta} />
+            </TabsContent>
           </Tabs>
 
           <a
