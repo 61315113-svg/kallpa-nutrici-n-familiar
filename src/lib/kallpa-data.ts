@@ -48,6 +48,22 @@ function r(
   return { id: slug(nombre), nombre, categoria, minutos, dificultad, imagen, badges: ["Económico y Accesible", ...badges], dietas, ingredientes, pasos, tips };
 }
 
+export type Grupo = "ninos" | "gestantes" | "mayores";
+export const grupos: { id: Grupo; label: string; corto: string }[] = [
+  { id: "ninos", label: "Niños en crecimiento", corto: "Niños" },
+  { id: "gestantes", label: "Madres gestantes (Prevención de anemia)", corto: "Gestantes" },
+  { id: "mayores", label: "Adultos mayores", corto: "Adultos mayores" },
+];
+
+/** Grupos que más se benefician: hierro/proteína → gestantes; desayunos, almuerzos, postres → niños; cenas, bebidas, dietas especiales o aptas para diabéticos → adultos mayores. */
+export function gruposDe(r: Pick<Receta, "categoria" | "dietas">): Grupo[] {
+  const g: Grupo[] = [];
+  if (["Desayuno", "Almuerzo", "Postre"].includes(r.categoria) || r.dietas.includes("proteina") || r.dietas.includes("hierro")) g.push("ninos");
+  if (r.dietas.includes("hierro") || r.dietas.includes("proteina")) g.push("gestantes");
+  if (["Cena", "Bebida", "Dieta Especial"].includes(r.categoria) || r.dietas.includes("diabeticos")) g.push("mayores");
+  return g;
+}
+
 const recetasBase: Receta[] = [
   // Desayunos
   r("Desayuno", "Ponche de habas con avena", 25, ponche, ["Rico en Fibra"], ["vegetariano"],
@@ -213,7 +229,9 @@ export const filtrosCategoria: Filtro[] = [
   { id: "sin-gluten", label: "Sin Gluten", test: (r) => r.dietas.includes("sin-gluten") },
 ];
 
-export const filtros = [...filtrosRapidos, ...filtrosCategoria];
+export const filtrosGrupo: Filtro[] = grupos.map((g) => ({ id: g.id, label: g.label, test: (r) => gruposDe(r).includes(g.id) }));
+
+export const filtros = [...filtrosRapidos, ...filtrosGrupo, ...filtrosCategoria];
 
 export function filtrarRecetas(lista: Receta[], filtroId: string, busqueda: string) {
   const f = filtros.find((x) => x.id === filtroId) ?? filtros[0];

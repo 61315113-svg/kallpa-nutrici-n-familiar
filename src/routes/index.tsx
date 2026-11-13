@@ -6,7 +6,7 @@ import {
 import { heroImage } from "@/lib/kallpa-images";
 import { RecipePhoto } from "@/components/recipe-photo";
 import { WhatsAppQr } from "@/components/whatsapp-qr";
-import { recetas, filtros, filtrarRecetas, mercados, WHATSAPP_GROUP_URL, type Receta } from "@/lib/kallpa-data";
+import { recetas, filtros, filtrarRecetas, mercados, WHATSAPP_GROUP_URL, grupos, gruposDe, type Receta } from "@/lib/kallpa-data";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -93,6 +93,15 @@ function Index() {
             <p className="mt-5 text-lg opacity-90">
               Recetas fáciles, nutritivas y económicas con productos de los mercados de Cusco.
             </p>
+            <ul className="mt-6 flex flex-wrap gap-2" aria-label="Pensado para">
+              {grupos.map((g) => (
+                <li key={g.id}>
+                  <button type="button" onClick={() => { setFiltro(g.id); document.getElementById("recetario")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-full border-2 border-corn bg-earth/60 px-3 py-1.5 text-sm font-bold text-earth-foreground backdrop-blur transition hover:bg-corn hover:text-corn-foreground">
+                    {g.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#recetario" className="inline-flex items-center rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground shadow-warm transition hover:-translate-y-0.5">
                 Explorar Recetas
@@ -149,6 +158,12 @@ function Index() {
                 <div className="mt-2 flex gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> {r.minutos} min</span>
                   <span>{r.dificultad}</span>
+                </div>
+                <p className="mt-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">Ideal para</p>
+                <div className="mt-1 flex flex-wrap gap-2">
+                  {gruposDe(r).map((g) => (
+                    <span key={g} className="rounded-full bg-corn px-2.5 py-0.5 text-xs font-bold text-corn-foreground">{grupos.find((x) => x.id === g)?.corto}</span>
+                  ))}
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {r.badges.map((b) => (
@@ -235,8 +250,20 @@ function Index() {
           <div>
             <h2 className="text-3xl font-bold md:text-4xl">Únete a la familia Kallpa en WhatsApp</h2>
             <p className="mt-3 max-w-xl opacity-90">
-              Cada semana te enviamos el menú económico, ofertas de los mercados y videitos cortos para cocinar rico y sano. ¡Es gratis!
+              Un espacio gratuito para familias cusqueñas, donde nos ayudamos a comer sano gastando poco.
             </p>
+            <ul className="mt-5 max-w-xl space-y-3">
+              {[
+                ["Recetas económicas", "Comparte y recibe ideas de comidas nutritivas con productos de casa."],
+                ["Preguntas y dudas", "Consulta sobre la alimentación de tus niños, embarazo o adultos mayores."],
+                ["Tips de mercado", "Entérate de qué está de temporada y a buen precio en San Pedro, Wanchaq, Vinocanchón y Huancaro."],
+              ].map(([t, d]) => (
+                <li key={t} className="flex gap-3">
+                  <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-whatsapp" aria-hidden="true" />
+                  <span><strong className="block">{t}</strong><span className="text-sm opacity-85">{d}</span></span>
+                </li>
+              ))}
+            </ul>
             <WaButton className="mt-6 text-lg">Unirme al Grupo VIP de Kallpa</WaButton>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -386,7 +413,7 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
               <TabsTrigger value="ingredientes" className="text-xs sm:text-sm">Ingredientes</TabsTrigger>
               <TabsTrigger value="pasos" className="whitespace-normal text-xs sm:text-sm">Leer Paso a Paso</TabsTrigger>
               <TabsTrigger value="tips" className="whitespace-normal text-xs sm:text-sm">Tips del Experto</TabsTrigger>
-              <TabsTrigger value="video" className="whitespace-normal text-xs sm:text-sm">Ver Video Tutorial</TabsTrigger>
+              <TabsTrigger value="video" className="whitespace-normal text-xs sm:text-sm">Ver preparación en video</TabsTrigger>
             </TabsList>
             <TabsContent value="ingredientes" className="pt-3">
               <p className="mb-3 text-sm text-muted-foreground">Ingredientes listos ({listos}/{receta.ingredientes.length}).</p>
