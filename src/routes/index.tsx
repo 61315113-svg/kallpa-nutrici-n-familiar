@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Search, Clock, Home, ShoppingBasket, Copy, Leaf, MapPin, CalendarDays, MessageCircle, Sparkles, Heart, Facebook, Instagram, Youtube, X,
+  Search, Clock, Home, ShoppingBasket, Copy, Leaf, MapPin, CalendarDays, MessageCircle, Sparkles, Heart, Facebook, Instagram, Youtube, X, Play,
 } from "lucide-react";
 import { heroImage } from "@/lib/kallpa-images";
 import { RecipePhoto } from "@/components/recipe-photo";
