@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Search, Clock, Home, ShoppingBasket, Copy, Leaf, MapPin, CalendarDays, MessageCircle, Sparkles, Heart, Facebook, Instagram, Youtube, X, Play,
+  Search, Clock, Home, ShoppingBasket, Copy, Leaf, MapPin, CalendarDays, MessageCircle, Sparkles, Heart, Facebook, Instagram, Youtube, X, Play, Check,
 } from "lucide-react";
 import { heroImage } from "@/lib/kallpa-images";
 import { RecipePhoto } from "@/components/recipe-photo";
 import { WhatsAppQr } from "@/components/whatsapp-qr";
-import { recetas, filtros, filtrarRecetas, mercados, WHATSAPP_GROUP_URL, grupos, gruposDe, type Receta } from "@/lib/kallpa-data";
+import { recetas, filtrarRecetas, mercados, WHATSAPP_GROUP_URL, grupos, gruposDe, type Receta } from "@/lib/kallpa-data";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,14 +52,41 @@ function WaButton({ children, className = "" }: { children: React.ReactNode; cla
   );
 }
 
+const RECETAS_INICIALES = 6;
+
+/** Fila 1 del recetario: comidas principales (una sola, deslizable). */
+const FILTROS_COMIDA: { id: string; label: string; test: (r: Receta) => boolean }[] = [
+  { id: "todas", label: "Todas", test: () => true },
+  { id: "desayunos", label: "Desayunos", test: (r) => r.categoria === "Desayuno" },
+  { id: "almuerzos", label: "Almuerzos", test: (r) => r.categoria === "Almuerzo" },
+  { id: "cenas", label: "Cenas Ligeras", test: (r) => r.categoria === "Cena" },
+  { id: "bebidas-postres", label: "Bebidas y Postres", test: (r) => r.categoria === "Bebida" || r.categoria === "Postre" },
+];
+
+/** Fila 2: para quién o qué necesitas hoy (chips pequeños, se combinan entre sí). */
+const FILTROS_NECESIDAD: { id: string; label: string; test: (r: Receta) => boolean }[] = [
+  { id: "ninos", label: "Niños", test: (r) => gruposDe(r).includes("ninos") },
+  { id: "gestantes", label: "Gestantes (Anti-anemia)", test: (r) => gruposDe(r).includes("gestantes") },
+  { id: "mayores", label: "Adultos Mayores", test: (r) => gruposDe(r).includes("mayores") },
+  { id: "rapidas", label: "Rápidas (<20 min)", test: (r) => r.minutos < 20 },
+  { id: "hierro-especiales", label: "Alto en Hierro / Especiales", test: (r) => r.dietas.includes("hierro") || r.categoria === "Dieta Especial" },
+];
+
 function Index() {
   const [busqueda, setBusqueda] = useState("");
-  const [filtro, setFiltro] = useState("todas");
+  const [comida, setComida] = useState("todas");
+  const [necesidades, setNecesidades] = useState<string[]>([]);
+  const [ampliado, setAmpliado] = useState(false);
   const [abierta, setAbierta] = useState<Receta | null>(null);
   const [mercadoAbierto, setMercadoAbierto] = useState<string | null>(null);
   const [bannerVisible, setBannerVisible] = useState(true);
 
-  const lista = useMemo(() => filtrarRecetas(recetas, filtro, busqueda), [filtro, busqueda]);
+  const lista = useMemo(() => {
+    const porBusqueda = filtrarRecetas(recetas, "todas", busqueda);
+    const principal = FILTROS_COMIDA.find((f) => f.id === comida) ?? FILTROS_COMIDA[0];
+    const activos = FILTROS_NECESIDAD.filter((f) => necesidades.includes(f.id));
+    return porBusqueda.filter((r) => principal.test(r) && activos.every((f) => f.test(r)));
+  }, [comida, necesidades, busqueda]);
   const destacadas = recetas.filter((r) => r.ingredientes.some((i) => /tarwi/i.test(i))).slice(0, 3);
 
   return (
