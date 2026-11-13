@@ -300,6 +300,58 @@ function Index() {
   );
 }
 
+function VideoTutorial({ receta }: { receta: Receta }) {
+  const [reproducir, setReproducir] = useState(false);
+
+  if (!receta.videoUrl) {
+    return (
+      <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-2xl bg-mint p-6 text-center text-mint-foreground">
+        <span className="grid h-14 w-14 place-items-center rounded-full bg-card shadow-sm">
+          <Play className="h-7 w-7 text-primary" />
+        </span>
+        <p className="font-bold">Video tutorial en preparación</p>
+        <p className="max-w-sm text-sm">
+          Muy pronto podrás ver el paso a paso de «{receta.nombre}» en video. Mientras tanto, sigue la preparación escrita en la pestaña anterior.
+        </p>
+      </div>
+    );
+  }
+
+  if (!reproducir) {
+    return (
+      <button
+        type="button"
+        onClick={() => setReproducir(true)}
+        className="group relative aspect-video w-full overflow-hidden rounded-2xl bg-earth text-earth-foreground"
+        aria-label={`Reproducir video tutorial de ${receta.nombre}`}
+      >
+        <RecipePhoto src={receta.imagen} alt="" loading="lazy" width={944} height={704} className="absolute inset-0 h-full w-full object-cover opacity-60" />
+        <span className="absolute inset-0 grid place-items-center">
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-whatsapp text-whatsapp-foreground shadow-warm transition group-hover:scale-110">
+            <Play className="h-8 w-8" />
+          </span>
+        </span>
+        <span className="absolute bottom-3 left-3 rounded-md bg-earth/80 px-3 py-1 text-sm font-semibold">
+          Toca para ver el video (usa datos móviles)
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <div className="aspect-video w-full overflow-hidden rounded-2xl bg-earth">
+      <iframe
+        src={receta.videoUrl}
+        title={`Video tutorial: ${receta.nombre}`}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="h-full w-full"
+      />
+    </div>
+  );
+}
+
 function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () => void }) {
   const [checks, setChecks] = useState<Record<string, boolean>>({});
   const [copyStatus, setCopyStatus] = useState("");
