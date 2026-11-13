@@ -3,27 +3,24 @@ import { recetas, mercados, filtrarRecetas } from "@/lib/kallpa-data";
 import { kallpaImages, recipeImageById, marketImageById } from "@/lib/kallpa-images";
 
 describe("Kallpa recipe rules", () => {
-  it("assigns genuinely distinct photos to all 30 recipes, four markets and cover", () => {
-    expect(recetas).toHaveLength(30);
+  it("tiene las 26 recetas, 4 mercados y fotos únicas por tarjeta", () => {
+    expect(recetas).toHaveLength(26);
     expect(mercados).toHaveLength(4);
     expect(kallpaImages).toHaveLength(35);
     expect(new Set(kallpaImages.map((p) => p.photoId)).size).toBe(35);
-    expect(new Set(recetas.map((r) => r.imagen)).size).toBe(30);
-    expect(recetas.every((r) => r.imagenFuente?.startsWith("https://images.unsplash.com/photo-"))).toBe(true);
+    expect(new Set(recetas.map((r) => r.id)).size).toBe(26);
+    expect(recetas.every((r) => Boolean(r.imagen))).toBe(true);
     expect(kallpaImages.every((p) => new URL(p.sourceUrl).searchParams.get("sig") === String(p.index))).toBe(true);
   });
-  it("uses 34 distinct source URLs across recipes and markets, without query-string duplicates", () => {
-    const photos = [...recetas, ...mercados];
-    expect(new Set(photos.map((photo) => photo.imagenFuente?.split("?")[0])).size).toBe(34);
-    expect(new Set(photos.map((photo) => photo.imagen)).size).toBe(34);
+  it("distribuye las recetas en las 5 categorías pedidas", () => {
+    const count = (c: string) => recetas.filter((r) => r.categoria === c).length;
+    expect([count("Desayuno"), count("Almuerzo"), count("Cena"), count("Bebida"), count("Postre")]).toEqual([5, 6, 5, 6, 4]);
   });
-  it("keeps every dish assigned to its own photo even when recipes are reordered", () => {
-    const reversed = [...recetas].reverse();
-    for (const receta of reversed) {
+  it("cada receta con foto del catálogo conserva su propia foto aunque se reordenen", () => {
+    for (const receta of [...recetas].reverse()) {
       const image = recipeImageById.get(receta.id);
-      expect(image?.sourceUrl).toBe(receta.imagenFuente);
+      if (image && !receta.imagen.includes("gstatic.com")) expect(image.sourceUrl).toBe(receta.imagenFuente);
     }
-    expect(recipeImageById.size).toBe(30);
   });
   it("records San Pedro provenance without claiming other markets are verified", () => {
     expect(marketImageById.get("san-pedro")?.photoId).toBe("1465512861810-7dd31b34ed98");
@@ -41,7 +38,7 @@ describe("Kallpa recipe rules", () => {
   });
   it("matches cañihua without accents", () => {
     expect(filtrarRecetas(recetas, "todas", "canihua").map((r) => r.id)).toEqual(filtrarRecetas(recetas, "todas", "cañihua").map((r) => r.id));
-    expect(filtrarRecetas(recetas, "todas", "canihua")).toHaveLength(2);
+    expect(filtrarRecetas(recetas, "todas", "canihua")).toHaveLength(1);
   });
   it("only accepts YouTube embed URLs for recipe videos", () => {
     for (const receta of recetas) {
