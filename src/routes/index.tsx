@@ -330,10 +330,11 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
           </DialogHeader>
 
           <Tabs defaultValue="ingredientes" className="mt-5">
-            <TabsList className="grid h-auto w-full grid-cols-3">
+            <TabsList className="grid h-auto w-full grid-cols-2 sm:grid-cols-4">
               <TabsTrigger value="ingredientes" className="text-xs sm:text-sm">Ingredientes</TabsTrigger>
-              <TabsTrigger value="pasos" className="text-xs sm:text-sm">Preparación</TabsTrigger>
+              <TabsTrigger value="pasos" className="whitespace-normal text-xs sm:text-sm">Leer Paso a Paso</TabsTrigger>
               <TabsTrigger value="tips" className="whitespace-normal text-xs sm:text-sm">Tips del Experto</TabsTrigger>
+              <TabsTrigger value="video" className="whitespace-normal text-xs sm:text-sm">Ver Video Tutorial</TabsTrigger>
             </TabsList>
             <TabsContent value="ingredientes" className="pt-3">
               <p className="mb-3 text-sm text-muted-foreground">Ingredientes listos ({listos}/{receta.ingredientes.length}).</p>
