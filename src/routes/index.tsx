@@ -81,12 +81,19 @@ function Index() {
   const [mercadoAbierto, setMercadoAbierto] = useState<string | null>(null);
   const [bannerVisible, setBannerVisible] = useState(true);
 
+  const toggleNecesidad = (id: string) => {
+    setAmpliado(false);
+    setNecesidades((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
+  };
+
   const lista = useMemo(() => {
     const porBusqueda = filtrarRecetas(recetas, "todas", busqueda);
     const principal = FILTROS_COMIDA.find((f) => f.id === comida) ?? FILTROS_COMIDA[0];
     const activos = FILTROS_NECESIDAD.filter((f) => necesidades.includes(f.id));
     return porBusqueda.filter((r) => principal.test(r) && activos.every((f) => f.test(r)));
   }, [comida, necesidades, busqueda]);
+
+  const recetasVisibles = ampliado ? lista : lista.slice(0, RECETAS_INICIALES);
   const destacadas = recetas.filter((r) => r.ingredientes.some((i) => /tarwi/i.test(i))).slice(0, 3);
 
   return (
@@ -123,7 +130,16 @@ function Index() {
             <ul className="mt-6 flex flex-wrap gap-2" aria-label="Pensado para">
               {grupos.map((g) => (
                 <li key={g.id}>
-                  <button type="button" onClick={() => { setFiltro(g.id); document.getElementById("recetario")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-full border-2 border-corn bg-earth/60 px-3 py-1.5 text-sm font-bold text-earth-foreground backdrop-blur transition hover:bg-corn hover:text-corn-foreground">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setComida("todas");
+                      setNecesidades([g.id]);
+                      setAmpliado(false);
+                      document.getElementById("recetario")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="rounded-full border-2 border-corn bg-earth/60 px-3 py-1.5 text-sm font-bold text-earth-foreground backdrop-blur transition hover:bg-corn hover:text-corn-foreground"
+                  >
                     {g.label}
                   </button>
                 </li>
@@ -152,29 +168,76 @@ function Index() {
             <input
               aria-label="Buscar recetas o ingredientes"
               value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
+              onChange={(e) => {
+                setBusqueda(e.target.value);
+                setAmpliado(false);
+              }}
               placeholder="Busca una receta o ingrediente: quinua, tarwi, kion…"
               className="w-full rounded-full border bg-background py-3 pl-12 pr-4 outline-none focus:ring-2 focus:ring-ring"
             />
           </label>
-          <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filtros de recetas">
-            {filtros.map((f) => (
+
+          {/* Fila 1: Momento del día */}
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Categorías de comida">
+            {FILTROS_COMIDA.map((f) => (
               <Button
                 key={f.id}
-                onClick={() => setFiltro(f.id)}
-                aria-pressed={filtro === f.id}
-                className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                  filtro === f.id ? "border-primary bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:border-primary"
+                type="button"
+                onClick={() => {
+                  setComida(f.id);
+                  setAmpliado(false);
+                }}
+                aria-pressed={comida === f.id}
+                className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  comida === f.id
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground hover:border-primary"
                 }`}
               >
                 {f.label}
               </Button>
             ))}
           </div>
+
+          {/* Fila 2: Público y necesidades combinables */}
+          <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label="Filtrar por necesidad o público">
+            <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground mr-1">Ideal para:</span>
+            {FILTROS_NECESIDAD.map((f) => {
+              const activo = necesidades.includes(f.id);
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => toggleNecesidad(f.id)}
+                  aria-pressed={activo}
+                  className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                    activo
+                      ? "border-leaf bg-leaf text-leaf-foreground"
+                      : "bg-background text-muted-foreground hover:border-leaf hover:text-foreground"
+                  }`}
+                >
+                  {activo && <Check className="h-3.5 w-3.5" />}
+                  {f.label}
+                </button>
+              );
+            })}
+            {necesidades.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setNecesidades([]);
+                  setAmpliado(false);
+                }}
+                className="text-xs font-semibold text-primary underline-offset-2 hover:underline ml-1"
+              >
+                Limpiar
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {lista.map((r) => (
+          {recetasVisibles.map((r) => (
             <article key={r.id} className="group flex flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-warm">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <RecipePhoto src={r.imagen} alt={`Imagen ilustrativa: ${r.nombre}`} loading="lazy" width={944} height={704} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
@@ -209,6 +272,19 @@ function Index() {
             </p>
           )}
         </div>
+
+        {!ampliado && lista.length > RECETAS_INICIALES && (
+          <div className="mt-10 text-center">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setAmpliado(true)}
+              className="rounded-full border-primary px-8 py-6 text-base font-bold text-primary hover:bg-primary hover:text-primary-foreground"
+            >
+              Ver más recetas ({lista.length - RECETAS_INICIALES} más)
+            </Button>
+          </div>
+        )}
       </section>
 
       {/* Superalimento */}
@@ -232,7 +308,6 @@ function Index() {
               <Button key={r.id} onClick={() => setAbierta(r)} variant="ghost" className="flex h-auto w-full items-center gap-4 whitespace-normal rounded-lg bg-card p-3 text-left shadow-sm transition hover:shadow-warm">
                 <RecipePhoto src={r.imagen} alt="" loading="lazy" width={944} height={704} className="h-16 w-20 shrink-0 rounded-lg object-cover" />
                 <span className="flex-1 font-bold">{r.nombre}</span>
-
               </Button>
             ))}
           </div>
