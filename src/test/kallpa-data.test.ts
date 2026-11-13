@@ -43,6 +43,13 @@ describe("Kallpa recipe rules", () => {
     expect(filtrarRecetas(recetas, "todas", "canihua").map((r) => r.id)).toEqual(filtrarRecetas(recetas, "todas", "cañihua").map((r) => r.id));
     expect(filtrarRecetas(recetas, "todas", "canihua")).toHaveLength(2);
   });
+  it("only accepts YouTube embed URLs for recipe videos", () => {
+    for (const receta of recetas) {
+      if (receta.videoUrl) {
+        expect(receta.videoUrl).toMatch(/^https:\/\/www\.youtube\.com\/embed\/[\w-]+/);
+      }
+    }
+  });
   it("limits quick recipes to strictly less than 20 minutes", () => {
     const found = filtrarRecetas(recetas, "rapidas", "");
     expect(found.length).toBeGreaterThan(0);

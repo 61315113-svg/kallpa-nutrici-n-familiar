@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  Search, Clock, Home, ShoppingBasket, Copy, Leaf, MapPin, CalendarDays, MessageCircle, Sparkles, Heart, Facebook, Instagram, Youtube, X,
+  Search, Clock, Home, ShoppingBasket, Copy, Leaf, MapPin, CalendarDays, MessageCircle, Sparkles, Heart, Facebook, Instagram, Youtube, X, Play,
 } from "lucide-react";
 import { heroImage } from "@/lib/kallpa-images";
 import { RecipePhoto } from "@/components/recipe-photo";
@@ -300,6 +300,58 @@ function Index() {
   );
 }
 
+function VideoTutorial({ receta }: { receta: Receta }) {
+  const [reproducir, setReproducir] = useState(false);
+
+  if (!receta.videoUrl) {
+    return (
+      <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-2xl bg-mint p-6 text-center text-mint-foreground">
+        <span className="grid h-14 w-14 place-items-center rounded-full bg-card shadow-sm">
+          <Play className="h-7 w-7 text-primary" />
+        </span>
+        <p className="font-bold">Video tutorial en preparación</p>
+        <p className="max-w-sm text-sm">
+          Muy pronto podrás ver el paso a paso de «{receta.nombre}» en video. Mientras tanto, sigue la preparación escrita en la pestaña anterior.
+        </p>
+      </div>
+    );
+  }
+
+  if (!reproducir) {
+    return (
+      <button
+        type="button"
+        onClick={() => setReproducir(true)}
+        className="group relative aspect-video w-full overflow-hidden rounded-2xl bg-earth text-earth-foreground"
+        aria-label={`Reproducir video tutorial de ${receta.nombre}`}
+      >
+        <RecipePhoto src={receta.imagen} alt="" loading="lazy" width={944} height={704} className="absolute inset-0 h-full w-full object-cover opacity-60" />
+        <span className="absolute inset-0 grid place-items-center">
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-whatsapp text-whatsapp-foreground shadow-warm transition group-hover:scale-110">
+            <Play className="h-8 w-8" />
+          </span>
+        </span>
+        <span className="absolute bottom-3 left-3 rounded-md bg-earth/80 px-3 py-1 text-sm font-semibold">
+          Toca para ver el video (usa datos móviles)
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <div className="aspect-video w-full overflow-hidden rounded-2xl bg-earth">
+      <iframe
+        src={receta.videoUrl}
+        title={`Video tutorial: ${receta.nombre}`}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="h-full w-full"
+      />
+    </div>
+  );
+}
+
 function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () => void }) {
   const [checks, setChecks] = useState<Record<string, boolean>>({});
   const [copyStatus, setCopyStatus] = useState("");
@@ -330,10 +382,11 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
           </DialogHeader>
 
           <Tabs defaultValue="ingredientes" className="mt-5">
-            <TabsList className="grid h-auto w-full grid-cols-3">
+            <TabsList className="grid h-auto w-full grid-cols-2 sm:grid-cols-4">
               <TabsTrigger value="ingredientes" className="text-xs sm:text-sm">Ingredientes</TabsTrigger>
-              <TabsTrigger value="pasos" className="text-xs sm:text-sm">Preparación</TabsTrigger>
+              <TabsTrigger value="pasos" className="whitespace-normal text-xs sm:text-sm">Leer Paso a Paso</TabsTrigger>
               <TabsTrigger value="tips" className="whitespace-normal text-xs sm:text-sm">Tips del Experto</TabsTrigger>
+              <TabsTrigger value="video" className="whitespace-normal text-xs sm:text-sm">Ver Video Tutorial</TabsTrigger>
             </TabsList>
             <TabsContent value="ingredientes" className="pt-3">
               <p className="mb-3 text-sm text-muted-foreground">Ingredientes listos ({listos}/{receta.ingredientes.length}).</p>
@@ -370,6 +423,9 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
                   {receta.tips.map((t) => <li key={t} className="flex gap-2"><Leaf className="mt-1 h-4 w-4 shrink-0" /> {t}</li>)}
                 </ul>
               </div>
+            </TabsContent>
+            <TabsContent value="video" className="pt-3">
+              <VideoTutorial receta={receta} />
             </TabsContent>
           </Tabs>
 

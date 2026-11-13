@@ -26,6 +26,8 @@ export interface Receta {
   ingredientes: string[];
   pasos: string[];
   tips: string[];
+  /** URL de embed de YouTube (https://www.youtube.com/embed/VIDEO_ID). Si falta, el modal muestra el estado "video en preparación". */
+  videoUrl?: string;
 }
 
 const slug = (s: string) =>
