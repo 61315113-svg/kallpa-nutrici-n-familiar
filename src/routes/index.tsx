@@ -7,7 +7,7 @@ import { heroImage } from "@/lib/kallpa-images";
 import { RecipePhoto } from "@/components/recipe-photo";
 import { WhatsAppQr } from "@/components/whatsapp-qr";
 import { recetas, filtrarRecetas, mercados, WHATSAPP_GROUP_URL, grupos, gruposDe, type Receta } from "@/lib/kallpa-data";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,8 @@ const FILTROS_COMIDA: { id: string; label: string; test: (r: Receta) => boolean 
   { id: "desayunos", label: "Desayunos", test: (r) => r.categoria === "Desayuno" },
   { id: "almuerzos", label: "Almuerzos", test: (r) => r.categoria === "Almuerzo" },
   { id: "cenas", label: "Cenas Ligeras", test: (r) => r.categoria === "Cena" },
-  { id: "bebidas-postres", label: "Bebidas y Postres", test: (r) => r.categoria === "Bebida" || r.categoria === "Postre" },
+  { id: "bebidas", label: "Bebidas", test: (r) => r.categoria === "Bebida" },
+  { id: "postres", label: "Postres", test: (r) => r.categoria === "Postre" },
 ];
 
 /** Fila 2: para quién o qué necesitas hoy (chips pequeños, se combinan entre sí). */
@@ -92,6 +93,13 @@ function Index() {
     const activos = FILTROS_NECESIDAD.filter((f) => necesidades.includes(f.id));
     return porBusqueda.filter((r) => principal.test(r) && activos.every((f) => f.test(r)));
   }, [comida, necesidades, busqueda]);
+
+  const elegirGrupo = (id: string) => {
+    setComida("todas");
+    setNecesidades([id]);
+    setAmpliado(false);
+    document.getElementById("recetario")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const recetasVisibles = ampliado ? lista : lista.slice(0, RECETAS_INICIALES);
   const destacadas = recetas.filter((r) => r.ingredientes.some((i) => /tarwi/i.test(i))).slice(0, 3);
@@ -127,24 +135,6 @@ function Index() {
             <p className="mt-5 text-lg opacity-90">
               Recetas fáciles, nutritivas y económicas con productos de los mercados de Cusco.
             </p>
-            <ul className="mt-6 flex flex-wrap gap-2" aria-label="Pensado para">
-              {grupos.map((g) => (
-                <li key={g.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setComida("todas");
-                      setNecesidades([g.id]);
-                      setAmpliado(false);
-                      document.getElementById("recetario")?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                    className="rounded-full border-2 border-corn bg-earth/60 px-3 py-1.5 text-sm font-bold text-earth-foreground backdrop-blur transition hover:bg-corn hover:text-corn-foreground"
-                  >
-                    {g.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#recetario" className="inline-flex items-center rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground shadow-warm transition hover:-translate-y-0.5">
                 Explorar Recetas
@@ -152,6 +142,26 @@ function Index() {
               <WaButton>Unirme al WhatsApp Kallpa</WaButton>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Franja de públicos */}
+      <section aria-label="Pensado para" className="border-b border-border/60 bg-secondary">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-center gap-3 px-4 py-4 sm:flex-row sm:gap-4">
+          <span className="text-sm font-bold uppercase tracking-wide text-secondary-foreground">Pensado para:</span>
+          <ul className="flex flex-wrap items-center justify-center gap-2">
+            {grupos.map((g) => (
+              <li key={g.id}>
+                <button
+                  type="button"
+                  onClick={() => elegirGrupo(g.id)}
+                  className="rounded-full border-2 border-corn bg-background px-4 py-1.5 text-sm font-bold text-foreground transition hover:bg-corn hover:text-corn-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {g.label}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -240,7 +250,7 @@ function Index() {
           {recetasVisibles.map((r) => (
             <article key={r.id} className="group flex flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-warm">
               <div className="relative aspect-[4/3] overflow-hidden">
-                <RecipePhoto src={r.imagen} alt={`Imagen ilustrativa: ${r.nombre}`} loading="lazy" width={944} height={704} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <RecipePhoto src={r.imagen} alt={`Imagen ilustrativa: ${r.nombre}`} loading="lazy" width={944} height={704} className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105" />
                 <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-bold">{r.categoria}</span>
               </div>
               <div className="flex flex-1 flex-col p-5">
@@ -306,7 +316,7 @@ function Index() {
           <div className="space-y-3">
             {destacadas.map((r) => (
               <Button key={r.id} onClick={() => setAbierta(r)} variant="ghost" className="flex h-auto w-full items-center gap-4 whitespace-normal rounded-lg bg-card p-3 text-left shadow-sm transition hover:shadow-warm">
-                <RecipePhoto src={r.imagen} alt="" loading="lazy" width={944} height={704} className="h-16 w-20 shrink-0 rounded-lg object-cover" />
+                <RecipePhoto src={r.imagen} alt="" loading="lazy" width={944} height={704} className="h-16 w-20 shrink-0 rounded-lg object-cover object-center" />
                 <span className="flex-1 font-bold">{r.nombre}</span>
               </Button>
             ))}
@@ -320,14 +330,14 @@ function Index() {
           <h2 className="text-3xl font-bold md:text-4xl">Guía de Mercados de Cusco</h2>
           <p className="mt-2 text-muted-foreground">Dónde comprar fresco, rico y barato. ¡Apoyemos a nuestros productores!</p>
         </div>
-        <Tabs defaultValue="san-pedro">
-          <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-4">
+        <Tabs defaultValue={mercados[0].id}>
+          <TabsList className="grid h-auto w-full grid-cols-3 gap-1 sm:grid-cols-5">
             {mercados.map((m) => <TabsTrigger key={m.id} value={m.id} className="py-3">{m.corto}</TabsTrigger>)}
           </TabsList>
           {mercados.map((m) => (
             <TabsContent key={m.id} value={m.id} className="mt-6">
               <div className="grid gap-6 md:grid-cols-2">
-                <RecipePhoto src={m.imagen} alt={`Puestos de productos frescos, imagen ilustrativa para ${m.nombre}`} loading="lazy" width={800} height={600} className="aspect-[4/3] w-full rounded-lg object-cover" />
+                <RecipePhoto src={m.imagen} alt={`Puestos del ${m.nombre}`} loading="lazy" width={800} height={600} className="aspect-[4/3] w-full rounded-lg object-cover object-center" />
                 <div>
                   <h3 className="text-2xl font-bold">{m.nombre}</h3>
                   <p className="mt-3 flex items-start gap-2 text-muted-foreground"><MapPin className="mt-1 h-4 w-4 shrink-0 text-primary" />{m.zona}</p>
@@ -358,7 +368,7 @@ function Index() {
               {[
                 ["Recetas económicas", "Comparte y recibe ideas de comidas nutritivas con productos de casa."],
                 ["Preguntas y dudas", "Consulta sobre la alimentación de tus niños, embarazo o adultos mayores."],
-                ["Tips de mercado", "Entérate de qué está de temporada y a buen precio en San Pedro, Wanchaq, Vinocanchón y Huancaro."],
+                ["Tips de mercado", "Entérate de qué está de temporada y a buen precio en Ttio, Ccascaparo, Huancaro, Wanchaq y Vinocanchón."],
               ].map(([t, d]) => (
                 <li key={t} className="flex gap-3">
                   <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-whatsapp" aria-hidden="true" />
@@ -430,8 +440,6 @@ function Index() {
 }
 
 function VideoTutorial({ receta }: { receta: Receta }) {
-  const [reproducir, setReproducir] = useState(false);
-
   if (!receta.videoUrl) {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-2xl bg-mint p-6 text-center text-mint-foreground">
@@ -440,39 +448,17 @@ function VideoTutorial({ receta }: { receta: Receta }) {
         </span>
         <p className="font-bold">Video tutorial en preparación</p>
         <p className="max-w-sm text-sm">
-          Muy pronto podrás ver el paso a paso de «{receta.nombre}» en video. Mientras tanto, sigue la preparación escrita en la pestaña anterior.
+          Muy pronto podrás ver el paso a paso de «{receta.nombre}» en video. Mientras tanto, sigue la preparación escrita en «Leer Paso a Paso».
         </p>
       </div>
-    );
-  }
-
-  if (!reproducir) {
-    return (
-      <button
-        type="button"
-        onClick={() => setReproducir(true)}
-        className="group relative aspect-video w-full overflow-hidden rounded-2xl bg-earth text-earth-foreground"
-        aria-label={`Reproducir video tutorial de ${receta.nombre}`}
-      >
-        <RecipePhoto src={receta.imagen} alt="" loading="lazy" width={944} height={704} className="absolute inset-0 h-full w-full object-cover opacity-60" />
-        <span className="absolute inset-0 grid place-items-center">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-whatsapp text-whatsapp-foreground shadow-warm transition group-hover:scale-110">
-            <Play className="h-8 w-8" />
-          </span>
-        </span>
-        <span className="absolute bottom-3 left-3 rounded-md bg-earth/80 px-3 py-1 text-sm font-semibold">
-          Toca para ver el video (usa datos móviles)
-        </span>
-      </button>
     );
   }
 
   return (
     <div className="aspect-video w-full overflow-hidden rounded-2xl bg-earth">
       <iframe
-        src={receta.videoUrl}
+        src={`${receta.videoUrl}?autoplay=1&rel=0`}
         title={`Video tutorial: ${receta.nombre}`}
-        loading="lazy"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         className="h-full w-full"
@@ -484,6 +470,7 @@ function VideoTutorial({ receta }: { receta: Receta }) {
 function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () => void }) {
   const [checks, setChecks] = useState<Record<string, boolean>>({});
   const [copyStatus, setCopyStatus] = useState("");
+  const [verVideo, setVerVideo] = useState(false);
   if (!receta) return null;
   const texto = encodeURIComponent(`¡Mira esta receta de Kallpa Nutrición! 🌽 ${receta.nombre}\n\nIngredientes:\n${receta.ingredientes.map((i) => `• ${i}`).join("\n")}\n\nPreparación:\n${receta.pasos.map((p, i) => `${i + 1}. ${p}`).join("\n")}\n\n¡Con productos de nuestros mercados cusqueños!`);
   const copiarLista = async () => {
@@ -498,8 +485,16 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[85dvh] overflow-y-auto p-0 sm:max-w-2xl">
-        <RecipePhoto src={receta.imagen} alt={`Imagen ilustrativa: ${receta.nombre}`} width={944} height={704} className="h-40 sm:h-56 w-full object-cover" />
+      <DialogContent className="max-h-[85dvh] overflow-y-auto p-0 sm:max-w-2xl [&>button:last-child]:hidden">
+        <div className="sticky top-0 z-20 h-0">
+          <DialogClose
+            aria-label="Cerrar receta"
+            className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-earth text-earth-foreground shadow-warm ring-2 ring-background transition hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"
+          >
+            <X className="h-5 w-5" />
+          </DialogClose>
+        </div>
+        <RecipePhoto src={receta.imagen} alt={`Imagen ilustrativa: ${receta.nombre}`} width={944} height={704} className="h-40 w-full object-cover object-center sm:h-56" />
         <div className="p-6">
           <DialogHeader>
             <DialogTitle className="font-display text-2xl">{receta.nombre}</DialogTitle>
@@ -510,12 +505,24 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
             </DialogDescription>
           </DialogHeader>
 
+          <div className="mt-5 flex justify-center">
+            <Button
+              type="button"
+              onClick={() => setVerVideo((v) => !v)}
+              aria-expanded={verVideo}
+              className="h-auto gap-3 whitespace-normal rounded-full bg-primary px-6 py-3 text-base font-bold text-primary-foreground shadow-warm transition hover:-translate-y-0.5 hover:bg-primary hover:brightness-105"
+            >
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-foreground text-primary"><Play className="h-4 w-4 fill-current" /></span>
+              {verVideo ? "Ocultar video" : "Ver preparación en video"}
+            </Button>
+          </div>
+          {verVideo && <div className="mt-4"><VideoTutorial receta={receta} /></div>}
+
           <Tabs defaultValue="ingredientes" className="mt-5">
-            <TabsList className="grid h-auto w-full grid-cols-2 sm:grid-cols-4">
+            <TabsList className="grid h-auto w-full grid-cols-3">
               <TabsTrigger value="ingredientes" className="text-xs sm:text-sm">Ingredientes</TabsTrigger>
               <TabsTrigger value="pasos" className="whitespace-normal text-xs sm:text-sm">Leer Paso a Paso</TabsTrigger>
               <TabsTrigger value="tips" className="whitespace-normal text-xs sm:text-sm">Tips del Experto</TabsTrigger>
-              <TabsTrigger value="video" className="whitespace-normal text-xs sm:text-sm">Ver preparación en video</TabsTrigger>
             </TabsList>
             <TabsContent value="ingredientes" className="pt-3">
               <p className="mb-3 text-sm text-muted-foreground">Ingredientes listos ({listos}/{receta.ingredientes.length}).</p>
@@ -552,9 +559,6 @@ function RecetaModal({ receta, onClose }: { receta: Receta | null; onClose: () =
                   {receta.tips.map((t) => <li key={t} className="flex gap-2"><Leaf className="mt-1 h-4 w-4 shrink-0" /> {t}</li>)}
                 </ul>
               </div>
-            </TabsContent>
-            <TabsContent value="video" className="pt-3">
-              <VideoTutorial receta={receta} />
             </TabsContent>
           </Tabs>
 
