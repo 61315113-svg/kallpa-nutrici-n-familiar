@@ -5,17 +5,23 @@ import { QR_QUIET, QR_BADGE_RADIUS, communityQrMatrix, isUnderBadge } from "@/li
 /** Lucide's message-circle outline, drawn inside the badge so it scales with the code. */
 const BUBBLE = "M7.9 20A9 9 0 1 0 4 16.1L2 22Z";
 
+/** Verde bosque de la marca: oscuro sobre blanco puro para que la cámara lo lea sin esfuerzo. */
+const FOREST = "#1B4332";
+
 /**
  * Real, scannable QR of the Kallpa WhatsApp group. The modules come straight
  * from WHATSAPP_GROUP_URL, so swapping the link in kallpa-data.ts updates the
- * printed code too.
+ * printed code too. Se presenta como una tarjeta blanca editorial con la
+ * etiqueta incluida; `className` controla el ancho de la tarjeta (p. ej. "w-60").
  */
 export const WhatsAppQr = memo(function WhatsAppQr({
   className = "",
   label = "Código QR para unirse al grupo de WhatsApp de Kallpa Nutrición",
+  caption = "Escanea con tu cámara para unirte al grupo",
 }: {
   className?: string;
   label?: string;
+  caption?: string;
 }) {
   const { size, dark } = useMemo(() => communityQrMatrix(), []);
   const side = size + QR_QUIET * 2;
@@ -26,7 +32,7 @@ export const WhatsAppQr = memo(function WhatsAppQr({
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       if (!dark[y * size + x] || isUnderBadge(x + QR_QUIET, y + QR_QUIET, side)) continue;
-      dots.push(<rect key={`${x}-${y}`} x={x + QR_QUIET} y={y + QR_QUIET} width={1} height={1} className="fill-earth" />);
+      dots.push(<rect key={`${x}-${y}`} x={x + QR_QUIET} y={y + QR_QUIET} width={1} height={1} fill={FOREST} />);
     }
   }
 
@@ -36,19 +42,22 @@ export const WhatsAppQr = memo(function WhatsAppQr({
       target="_blank"
       rel="noreferrer"
       aria-label={label}
-      className={`group relative block shrink-0 rounded-2xl bg-card shadow-sm ring-1 ring-border transition hover:ring-primary ${className}`}
+      className={`group block shrink-0 rounded-2xl bg-white p-3 text-center shadow-lg shadow-black/15 ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring sm:p-4 ${className}`}
     >
-      <svg viewBox={`0 0 ${side} ${side}`} className="h-full w-full" shapeRendering="crispEdges" role="img" aria-label={label} focusable="false">
-        <rect width={side} height={side} rx={4} className="fill-card" />
+      <svg viewBox={`0 0 ${side} ${side}`} className="block h-auto w-full" shapeRendering="crispEdges" role="img" aria-label={label} focusable="false">
+        <rect width={side} height={side} fill="#FFFFFF" />
         {dots}
-        <circle cx={c} cy={c} r={QR_BADGE_RADIUS} className="fill-card" />
+        <circle cx={c} cy={c} r={QR_BADGE_RADIUS} fill="#FFFFFF" />
         <g transform={`translate(${c} ${c}) scale(${(QR_BADGE_RADIUS * 2) / 26})`}>
           <circle r={13} className="fill-whatsapp" />
           <g transform="translate(-9.5 -9.5) scale(0.85) translate(-12 -12)">
-            <path d={BUBBLE} fill="none" className="stroke-whatsapp-foreground" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
+            <path d={BUBBLE} fill="none" stroke="#FFFFFF" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
           </g>
         </g>
       </svg>
+      <span className="mt-2 block text-xs font-semibold leading-snug sm:text-sm" style={{ color: FOREST }}>
+        {caption}
+      </span>
     </a>
   );
 });

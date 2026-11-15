@@ -6,5 +6,6 @@ export function RecipePhoto({ src, alt, className, ...props }: ImgHTMLAttributes
   if (src && failedSrc === src) {
     return <div role="img" aria-label={`Foto no disponible: ${alt ?? ""}`} className={`grid place-items-center bg-mint text-mint-foreground ${className ?? ""}`}><ImageOff aria-hidden="true" className="h-8 w-8" /></div>;
   }
-  return <img {...props} src={src} alt={alt} className={className} onError={() => setFailedSrc(src)} />;
+  // referrerPolicy: muchas webs bloquean imágenes enlazadas desde otro sitio; así se envían sin referencia.
+  return <img referrerPolicy="no-referrer" {...props} src={src} alt={alt} className={className} onError={() => setFailedSrc(src)} />;
 }
