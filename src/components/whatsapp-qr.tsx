@@ -27,12 +27,13 @@ export const WhatsAppQr = memo(function WhatsAppQr({
   const side = size + QR_QUIET * 2;
   const c = side / 2;
 
-  // Solid, full-module squares: the most reliable thing a phone camera can read.
-  const dots: React.ReactNode[] = [];
+  // Todos los módulos oscuros en UNA sola figura: sin costuras entre cuadros, bordes nítidos
+  // y proporciones idénticas a la matriz del QR, sea cual sea el tamaño de la tarjeta.
+  let d = "";
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       if (!dark[y * size + x] || isUnderBadge(x + QR_QUIET, y + QR_QUIET, side)) continue;
-      dots.push(<rect key={`${x}-${y}`} x={x + QR_QUIET} y={y + QR_QUIET} width={1} height={1} fill={FOREST} />);
+      d += `M${x + QR_QUIET} ${y + QR_QUIET}h1v1h-1z`;
     }
   }
 
@@ -44,13 +45,13 @@ export const WhatsAppQr = memo(function WhatsAppQr({
       aria-label={label}
       className={`group block shrink-0 rounded-2xl bg-white p-3 text-center shadow-lg shadow-black/15 ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring sm:p-4 ${className}`}
     >
-      <svg viewBox={`0 0 ${side} ${side}`} className="block h-auto w-full" shapeRendering="crispEdges" role="img" aria-label={label} focusable="false">
+      <svg viewBox={`0 0 ${side} ${side}`} className="block aspect-square h-auto w-full" shapeRendering="crispEdges" preserveAspectRatio="xMidYMid meet" role="img" aria-label={label} focusable="false">
         <rect width={side} height={side} fill="#FFFFFF" />
-        {dots}
+        <path d={d} fill={FOREST} />
         <circle cx={c} cy={c} r={QR_BADGE_RADIUS} fill="#FFFFFF" />
         <g transform={`translate(${c} ${c}) scale(${(QR_BADGE_RADIUS * 2) / 26})`}>
           <circle r={13} className="fill-whatsapp" />
-          <g transform="translate(-9.5 -9.5) scale(0.85) translate(-12 -12)">
+          <g transform="scale(0.85) translate(-12 -12)">
             <path d={BUBBLE} fill="none" stroke="#FFFFFF" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
           </g>
         </g>

@@ -24,11 +24,12 @@ describe("Kallpa recipe rules", () => {
     const count = (c: string) => recetas.filter((r) => r.categoria === c).length;
     expect([count("Desayuno"), count("Almuerzo"), count("Cena"), count("Bebida"), count("Postre")]).toEqual([5, 6, 5, 6, 4]);
   });
-  it("cada receta con foto del catálogo conserva su propia foto aunque se reordenen", () => {
-    for (const receta of [...recetas].reverse()) {
-      const image = recipeImageById.get(receta.id);
-      if (image && !receta.imagen.includes("gstatic.com")) expect(image.sourceUrl).toBe(receta.imagenFuente);
+  it("cada receta muestra su URL directa, sin alterarla ni reemplazarla por el catálogo", () => {
+    for (const receta of recetas) {
+      expect(receta.imagen).toMatch(/^https:\/\//);
+      expect(receta.imagen).not.toContain("?sig=");
     }
+    expect(new Set(recetas.map((r) => r.imagen)).size).toBe(26);
   });
   it("records San Pedro provenance without claiming other markets are verified", () => {
     expect(marketImageById.get("san-pedro")?.photoId).toBe("1465512861810-7dd31b34ed98");
