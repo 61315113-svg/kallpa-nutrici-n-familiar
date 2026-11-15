@@ -3,14 +3,22 @@ import { recetas, mercados, filtrarRecetas } from "@/lib/kallpa-data";
 import { kallpaImages, recipeImageById, marketImageById } from "@/lib/kallpa-images";
 
 describe("Kallpa recipe rules", () => {
-  it("tiene las 26 recetas, 4 mercados y fotos únicas por tarjeta", () => {
+  it("tiene las 26 recetas, 5 mercados y fotos únicas por tarjeta", () => {
     expect(recetas).toHaveLength(26);
-    expect(mercados).toHaveLength(4);
+    expect(mercados).toHaveLength(5);
     expect(kallpaImages).toHaveLength(35);
     expect(new Set(kallpaImages.map((p) => p.photoId)).size).toBe(35);
     expect(new Set(recetas.map((r) => r.id)).size).toBe(26);
     expect(recetas.every((r) => Boolean(r.imagen))).toBe(true);
     expect(kallpaImages.every((p) => new URL(p.sourceUrl).searchParams.get("sig") === String(p.index))).toBe(true);
+  });
+  it("incluye los 5 mercados de Cusco, cada uno con su imagen directa", () => {
+    expect(mercados.map((m) => m.id)).toEqual(["ttio", "ccascaparo", "huancaro", "wanchaq", "vinocanchon"]);
+    for (const m of mercados) {
+      expect(m.imagen).toBeDefined();
+      expect(m.imagen).toMatch(/^https:\/\//);
+      expect(m.tips).toHaveLength(3);
+    }
   });
   it("distribuye las recetas en las 5 categorías pedidas", () => {
     const count = (c: string) => recetas.filter((r) => r.categoria === c).length;

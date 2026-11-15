@@ -287,17 +287,48 @@ export function filtrarRecetas(lista: Receta[], filtroId: string, busqueda: stri
 
 const mercadosBase = [
   {
-    id: "san-pedro",
-    corto: "San Pedro",
-    nombre: "Mercado de San Pedro",
-    zona: "Centro Histórico, a 5 cuadras de la Plaza de Armas",
-    horario: "Todos los días · 6:00 a.m. – 6:00 p.m.",
-    mejoresDias: "Lunes a sábado, temprano",
-    temporada: ["Granos andinos", "Frutas de la selva", "Quesos frescos", "Hierbas aromáticas"],
+    id: "ttio",
+    corto: "Ttio",
+    nombre: "Mercado de Ttio",
+    zona: "Av. 28 de Julio, Urb. Ttio, Wanchaq",
+    horario: "Todos los días · 6:00 a.m. – 6:30 p.m.",
+    mejoresDias: "Miércoles y sábados",
+    imagen: "https://machupicchuwayna.com/wp-content/uploads/2024/11/Mercado-de-Ttio.jpg",
+    temporada: ["Quinua y cañihua", "Verduras frescas", "Frutas de estación", "Queso fresco"],
     tips: [
-      "Llega temprano, antes de las 8:00 a.m., y encontrarás las frutas más frescas.",
-      "Al fondo del mercado hay granos andinos a granel, mucho más económicos.",
-      "No olvides pedir tu «yapa»: ¡es una linda costumbre cusqueña!",
+      "Puestos ordenados y limpios ideales para compras rápidas de la semana.",
+      "Llega antes de las 8:30 a.m. para conseguir pan artesanal caliente y queso fresco del día.",
+      "Pregunta en los puestos exteriores de productores por hierbas aromáticas y atados de espinaca a mejor precio.",
+    ],
+  },
+  {
+    id: "ccascaparo",
+    corto: "Ccascaparo",
+    nombre: "Mercado Ccascaparo",
+    zona: "Calle Ccascaparo (a una cuadra de San Pedro), Centro Histórico",
+    horario: "Todos los días · 5:30 a.m. – 5:00 p.m.",
+    mejoresDias: "Martes, jueves y sábados",
+    imagen: "https://trexperienceperu.com/sites/default/files/cascaparo-market_0.webp",
+    temporada: ["Papas nativas", "Olluco y mashua", "Habas y choclo", "Hierbas medicinales"],
+    tips: [
+      "Excelente punto para comprar tubérculos andinos, morón y cereales por kilo a precio mayorista.",
+      "Revisa que los ollucos y papas estén firmes y sin brotes verdes.",
+      "Lleva tus propias bolsas de tela para aprovechar las «yapas» de las caseras.",
+    ],
+  },
+  {
+    id: "huancaro",
+    corto: "Huancaro",
+    nombre: "Mercado Huancaro",
+    zona: "Av. Malecón Huancaro, Santiago",
+    horario: "Sábados de feria 5:00 a.m. – 3:00 p.m. (puestos fijos toda la semana)",
+    mejoresDias: "Sábados (feria de productores)",
+    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZx7kaIY8X1eiwTQSC0boz13-UTCEqjPTlkttQwzeFODNNGKpvaSVGM_g&s=10",
+    temporada: ["Tarwi fresco", "Maíz blanco", "Verduras del valle", "Frutas de Quillabamba"],
+    tips: [
+      "Es el mejor lugar para comprar directo al productor sin intermediarios.",
+      "Aprovecha los sábados temprano para llevar tarwi desamargado listo para consumir, zapallo macre por tajadas grandes y frutas tropicales económicas.",
+      "Llega antes de las 9:00 a.m. para encontrar la mayor variedad.",
     ],
   },
   {
@@ -307,46 +338,35 @@ const mercadosBase = [
     zona: "Av. Garcilaso, Wanchaq",
     horario: "Todos los días · 6:00 a.m. – 7:00 p.m.",
     mejoresDias: "Martes y viernes",
-    temporada: ["Sangrecita", "Verduras del Valle Sagrado", "Choclo", "Habas verdes"],
+    imagen: "https://i.ytimg.com/vi/UcHiNNSmIPo/sddefault.jpg",
+    temporada: ["Sangrecita fresca", "Espinaca y acelga", "Pollo y carnes", "Plátano y papaya"],
     tips: [
-      "Es el lugar ideal para conseguir sangrecita y menudencias frescas.",
-      "Las verduras del Valle Sagrado llegan los martes y viernes.",
-      "Compara precios con dos o tres caseras antes de decidir tu compra.",
+      "Pide la sangrecita fresca bien temprano en la sección de carnes y aves.",
+      "Combina tu compra con limón y hierbabuena en el mismo pasillo para mejorar la absorción de hierro.",
+      "Los puestos del interior tienen precios estables todo el día.",
     ],
   },
   {
     id: "vinocanchon",
     corto: "Vinocanchón",
     nombre: "Mercado Vinocanchón",
-    zona: "San Jerónimo",
-    horario: "Todos los días · desde muy temprano",
-    mejoresDias: "Miércoles y sábado",
-    temporada: ["Papa nativa", "Habas", "Tarwi", "Olluco"],
+    zona: "Av. La Cultura / Prolongación, San Jerónimo",
+    horario: "Todos los días · 5:00 a.m. – 6:30 p.m.",
+    mejoresDias: "Jueves y domingos",
+    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMsdo2Yqu_-4rImhAu6_CGf4rdze618zLT5YAlga0QnsyhB3IvxSLmAHc&s=10",
+    temporada: ["Zanahoria y beterraga", "Zapallo y choclo", "Kiwicha y quinua", "Frutas por mayor"],
     tips: [
-      "Es un mercado mayorista: organízate con tus vecinas, compren juntas y ahorren.",
-      "Excelente para papa nativa, habas y tarwi.",
-      "Lleva tu propia bolsa de tela y monedas sencillas.",
-    ],
-  },
-  {
-    id: "huancaro",
-    corto: "Huancaro",
-    nombre: "Feria de Huancaro",
-    zona: "Huancaro, Santiago",
-    horario: "Solo domingos · 5:00 a.m. – 2:00 p.m.",
-    mejoresDias: "Domingo antes de las 9:00 a.m.",
-    temporada: ["Quesos de las comunidades", "Cuy", "Granos recién cosechados", "Aguaymanto"],
-    tips: [
-      "Compras directo a los productores de las comunidades, a precios justos.",
-      "Encontrarás quesos frescos, cuy y granos recién cosechados.",
-      "Llega antes de las 9:00 a.m. para disfrutar de la mayor variedad.",
+      "Uno de los mercados más económicos de Cusco para abastecer la despensa familiar.",
+      "Compra verduras de raíz (beterraga, zanahoria, nabo) con hojas verdes frescas como señal de cosecha reciente.",
+      "Ideal para comprar frutas maduras para jugos y extractos a bajo costo.",
     ],
   },
 ];
 
 export const mercados = mercadosBase.map((mercado) => {
-  const photo = marketImageById.get(mercado.id);
-  return { ...mercado, imagen: photo ? `${photo.url}?sig=${photo.index}` : undefined, imagenFuente: photo?.sourceUrl };
+  // Si el mercado ya trae una imagen directa (http...), se respeta y no se reemplaza por el catálogo.
+  const photo = mercado.imagen.startsWith("http") ? undefined : marketImageById.get(mercado.id);
+  return { ...mercado, imagen: photo ? `${photo.url}?sig=${photo.index}` : mercado.imagen, imagenFuente: photo?.sourceUrl };
 });
 
 // Enlace del grupo compartido para todos los accesos a la comunidad.
